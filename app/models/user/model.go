@@ -1,6 +1,6 @@
 package user
 
 type User struct {
-	Email    string `gorm:"email" json:"email"`
+	Name     string `gorm:"name" json:"name"`
 	Password string `gorm:"password" json:"password"`
 }

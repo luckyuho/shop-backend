@@ -1,9 +1,10 @@
 package v1
 
 import (
+	"fmt"
 	"net/http"
 
-	UserCtr "basic/app/controllers/user"
+	ctr "basic/app/controllers"
 	UserModel "basic/app/models/user"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,7 @@ func HelloWorld(c *gin.Context) {
 func ApiRegister(c *gin.Context) {
 	input := UserModel.User{}
 	c.Bind(&input)
-	result := UserCtr.RegisterUser(input.Email, input.Password)
+	result := ctr.RegisterUser(input.Name, input.Password)
 	template(c, http.StatusOK, result)
 }
 
@@ -29,7 +30,7 @@ func ApiRegister(c *gin.Context) {
 func ApiLogin(c *gin.Context) {
 	input := UserModel.User{}
 	c.Bind(&input)
-	result := UserCtr.LoginUser(input.Email, input.Password)
+	result := ctr.LoginUser(input.Name, input.Password)
 	template(c, http.StatusOK, result)
 }
 
@@ -38,4 +39,26 @@ func template(c *gin.Context, code int, data interface{}) {
 	c.JSON(code, gin.H{
 		"data": data,
 	})
+}
+
+// 註冊使用者
+func ApiOauthCode2GetAccessToken(c *gin.Context) {
+	fullURL := c.Request.URL.String()
+	status, accessToken := ctr.GetUserInfo(fullURL)
+
+	if status == http.StatusBadRequest {
+		template(c, status, accessToken)
+	} else {
+		token := ctr.GetCookie(c, accessToken.IdString)
+		if !token.Success {
+			fmt.Println("錯誤")
+			template(c, http.StatusBadRequest, "取得cookie時錯誤")
+			return
+		}
+		// 指定目標網域的 URL
+		targetURL := "http://localhost:8080/#/redirect?token=" + token.Token
+
+		// 執行 URL 轉址到目標網域
+		c.Redirect(http.StatusMovedPermanently, targetURL)
+	}
 }

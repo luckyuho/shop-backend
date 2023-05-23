@@ -1,4 +1,4 @@
-package user
+package controllers
 
 import (
 	UserModel "basic/app/models/user"
@@ -10,16 +10,18 @@ import (
 )
 
 func CreateJwtToken(
-	email string,
+	name string,
 ) (string, error) {
+	// fmt.Println(name)
 	claims := jwt.MapClaims{
-		"username": email,
+		"username": name,
 		"exp":      time.Now().Add(time.Hour * 24).Unix(), // 過期時間為 24 小時後
 	}
 
 	// 使用密鑰簽署 JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	secret := os.Getenv("JWTSECRET")
+	// fmt.Println(secret, token)
 
 	// 使用密鑰生成最終的 JWT 字串
 	tokenString, err := token.SignedString([]byte(secret))
@@ -35,11 +37,11 @@ type token struct {
 }
 
 func RegisterUser(
-	email,
+	name,
 	password string,
 ) token {
 
-	err := UserModel.CreateUser(email, password)
+	err := UserModel.CreateUser(name, password)
 	if err != nil {
 		return token{
 			Success: false,
@@ -47,7 +49,7 @@ func RegisterUser(
 		}
 	}
 
-	tokenString, err := CreateJwtToken(email)
+	tokenString, err := CreateJwtToken(name)
 
 	return token{
 		Success: err == nil,
@@ -58,10 +60,10 @@ func RegisterUser(
 // 使用者登入
 // 如果資料庫中沒有找到對應的使用者帳密，回傳 err = record not found，有找到則 err = nil
 func LoginUser(
-	email,
+	name,
 	password string,
 ) token {
-	err := UserModel.LoginUser(email, password)
+	err := UserModel.LoginUser(name, password)
 
 	if err != nil {
 		return token{
@@ -70,7 +72,7 @@ func LoginUser(
 		}
 	}
 
-	tokenString, err := CreateJwtToken(email)
+	tokenString, err := CreateJwtToken(name)
 
 	return token{
 		Success: err == nil,
