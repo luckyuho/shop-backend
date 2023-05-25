@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	ctr "basic/app/controllers"
+	ProductModel "basic/app/models/product"
 	UserModel "basic/app/models/user"
 
 	"github.com/gin-gonic/gin"
@@ -61,4 +62,34 @@ func ApiOauthCode2GetAccessToken(c *gin.Context) {
 		// 執行 URL 轉址到目標網域
 		c.Redirect(http.StatusMovedPermanently, targetURL)
 	}
+}
+
+func ApiGetAllProducts(c *gin.Context) {
+	products := ctr.GetAllProducts()
+	template(c, http.StatusOK, products)
+}
+
+func ApiPurchaseSql(c *gin.Context) {
+	input := ProductModel.Product{}
+	c.Bind(&input)
+	fmt.Println(input)
+	err := ctr.PurchaseProduct(input.Id)
+	if err != nil {
+		template(c, http.StatusBadRequest, "購買商品時出錯")
+	} else {
+		template(c, http.StatusOK, nil)
+	}
+}
+
+func ApiPurchaseVisa(c *gin.Context) {
+	input := ProductModel.Product{}
+	c.Bind(&input)
+	fmt.Println(input)
+	data := ctr.PurchaseVisa(input.Id)
+	// if err != nil {
+	// 	template(c, http.StatusBadRequest, "金流錯誤")
+	// } else {
+	fmt.Println(data)
+	template(c, http.StatusOK, data)
+	// }
 }

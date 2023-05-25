@@ -29,6 +29,9 @@ func InitRouter() *gin.Engine {
 	Gr1.POST("/register", v1.ApiRegister)
 	Gr1.POST("/login", v1.ApiLogin)
 	Gr1.GET("/redirect", v1.ApiOauthCode2GetAccessToken)
+	Gr1.GET("/products", v1.ApiGetAllProducts)
+	Gr1.POST("/purchase", v1.ApiPurchaseSql)
+	Gr1.POST("/visa", v1.ApiPurchaseVisa)
 
 	return r
 }

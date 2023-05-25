@@ -55,11 +55,6 @@ type ResponseMsg struct {
 	TokenType   string `json:"token_type"`
 }
 
-// type TokenMsg struct {
-// 	ErrorMsg    string `json:"error_msg"`
-// 	AccessToken string `json:"access_token"`
-// }
-
 func CodeToAccessToken(code string) (int, UserInfo) {
 	err := godotenv.Load(".env")
 	if err != nil {

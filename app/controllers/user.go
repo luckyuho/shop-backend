@@ -12,7 +12,6 @@ import (
 func CreateJwtToken(
 	name string,
 ) (string, error) {
-	// fmt.Println(name)
 	claims := jwt.MapClaims{
 		"username": name,
 		"exp":      time.Now().Add(time.Hour * 24).Unix(), // 過期時間為 24 小時後
@@ -21,7 +20,6 @@ func CreateJwtToken(
 	// 使用密鑰簽署 JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	secret := os.Getenv("JWTSECRET")
-	// fmt.Println(secret, token)
 
 	// 使用密鑰生成最終的 JWT 字串
 	tokenString, err := token.SignedString([]byte(secret))
