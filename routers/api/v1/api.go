@@ -83,14 +83,14 @@ func ApiGetAllProducts(c *gin.Context) {
 // }
 
 func ApiPurchaseVisa(c *gin.Context) {
-	input := ProductModel.GetId{}
+	input := ProductModel.Product{}
 	c.Bind(&input)
-	fmt.Println(input)
+	// fmt.Println(input)
 	userId := auth.GetUserId(c)
-	fmt.Println(userId)
+	// fmt.Println(userId)
 
-	// data := ctr.PurchaseVisa(userId, input.Id)
-	// template(c, http.StatusOK, userId)
+	data := ctr.PurchaseVisa(userId, input.Id)
+	template(c, http.StatusOK, data)
 }
 
 type NewebPayReturn struct {

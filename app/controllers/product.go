@@ -31,6 +31,9 @@ type VisaData struct {
 	TradeSha    string
 	Version     string
 	EncryptType int
+	Image       string
+	Name        string
+	Price       int
 }
 
 type MpgInfo struct {
@@ -64,9 +67,13 @@ func PurchaseVisa(userId, id int) VisaData {
 
 	var visaData VisaData
 	visaData.MerchantID = mpgInfo.merchantID
-	visaData.TradeInfo = MpgRequest(id, userId)
+	tradeInfo, info := MpgRequest(id, userId)
+	visaData.TradeInfo = tradeInfo
 	visaData.TradeSha = MpgSha(visaData.TradeInfo)
 	visaData.Version = mpgInfo.version
+	visaData.Name = info.Name
+	visaData.Image = info.Image
+	visaData.Price = info.Price
 
 	return visaData
 }
@@ -147,22 +154,22 @@ func bin2hex(
 func MpgRequest(
 	id int,
 	userId int,
-) string {
+) (string, product.Product) {
 
 	info, err := createOrder(id, userId)
 	if err != nil {
-		return ""
+		return "", product.Product{}
 	}
 
 	reqData := http_build_query(info.Price, info.TimeStamp, info.Name)
 	ciphertext, err := openssl_encrypt(reqData)
 	if err != nil {
 		logrus.Error("MpgRequest錯誤", err)
-		return ""
+		return "", product.Product{}
 	}
 
 	hexString := bin2hex(ciphertext)
-	return hexString
+	return hexString, info
 
 }
 
@@ -231,10 +238,13 @@ func ApiPurchaseResult(hexString string) (int, error) {
 		return http.StatusBadRequest, err
 	}
 
+	fmt.Println("orderNo: ", orderNo)
 	id, err := product.FindProductId(orderNo)
 	if err != nil {
 		return http.StatusBadRequest, err
 	}
+
+	fmt.Println("商品id: ", id)
 
 	err = PurchaseProduct(id)
 	if err != nil {

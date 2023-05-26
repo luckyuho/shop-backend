@@ -75,5 +75,5 @@ func FindProductId(
 		logrus.Error("讀取訂單出錯", err)
 		return 0, err
 	}
-	return order.Id, nil
+	return order.ProductId, nil
 }
