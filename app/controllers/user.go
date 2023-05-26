@@ -10,11 +10,11 @@ import (
 )
 
 func CreateJwtToken(
-	name string,
+	id int,
 ) (string, error) {
 	claims := jwt.MapClaims{
-		"username": name,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(), // 過期時間為 24 小時後
+		"id":  id,
+		"exp": time.Now().Add(time.Hour * 24).Unix(), // 過期時間為 24 小時後
 	}
 
 	// 使用密鑰簽署 JWT token
@@ -39,7 +39,7 @@ func RegisterUser(
 	password string,
 ) token {
 
-	err := UserModel.CreateUser(name, password)
+	user, err := UserModel.CreateUser(name, password)
 	if err != nil {
 		return token{
 			Success: false,
@@ -47,7 +47,7 @@ func RegisterUser(
 		}
 	}
 
-	tokenString, err := CreateJwtToken(name)
+	tokenString, err := CreateJwtToken(user.Id)
 
 	return token{
 		Success: err == nil,
@@ -61,7 +61,7 @@ func LoginUser(
 	name,
 	password string,
 ) token {
-	err := UserModel.LoginUser(name, password)
+	user, err := UserModel.LoginUser(name, password)
 
 	if err != nil {
 		return token{
@@ -70,7 +70,7 @@ func LoginUser(
 		}
 	}
 
-	tokenString, err := CreateJwtToken(name)
+	tokenString, err := CreateJwtToken(user.Id)
 
 	return token{
 		Success: err == nil,

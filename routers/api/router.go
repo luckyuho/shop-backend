@@ -17,6 +17,7 @@ func InitRouter() *gin.Engine {
 
 	r.Use(cors.New(cors.Config{
 		AllowOriginFunc:  func(origin string) bool { return true },
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*"},
 		AllowHeaders:     []string{"*"},
 		AllowCredentials: true,
@@ -30,8 +31,9 @@ func InitRouter() *gin.Engine {
 	Gr1.POST("/login", v1.ApiLogin)
 	Gr1.GET("/redirect", v1.ApiOauthCode2GetAccessToken)
 	Gr1.GET("/products", v1.ApiGetAllProducts)
-	Gr1.POST("/purchase", v1.ApiPurchaseSql)
+	// Gr1.POST("/purchase", v1.ApiPurchaseSql)
 	Gr1.POST("/visa", v1.ApiPurchaseVisa)
+	Gr1.POST("/notify", v1.ApiNotifyPurchase)
 
 	return r
 }

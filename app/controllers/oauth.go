@@ -27,9 +27,19 @@ func GetUserInfo(rawURL string) (int, UserInfo) {
 
 	status, token := GetUser(accessToken.AccessToken)
 
-	if UserModel.FindUser(token.IdString) != nil {
-		UserModel.CreateUser(token.IdString, "github")
+	user, err := UserModel.FindUser(token.IdString)
+
+	if err != nil {
+		user, err := UserModel.CreateUser(token.IdString, "github")
+		if err != nil {
+			logrus.Error("github創建使用者錯誤", err)
+			return http.StatusBadRequest, accessToken
+		}
+		accessToken.Id = user.Id
+		return http.StatusOK, accessToken
 	}
+
+	token.Id = user.Id
 
 	return status, token
 }
@@ -148,8 +158,8 @@ func GetUser(accessToken string) (int, UserInfo) {
 	return http.StatusOK, UserInfo{Login: result.Login, Id: result.Id, IdString: strconv.Itoa(result.Id)}
 }
 
-func GetCookie(c *gin.Context, name string) token {
-	tokenString, err := CreateJwtToken(name)
+func GetCookie(c *gin.Context, id int) token {
+	tokenString, err := CreateJwtToken(id)
 
 	return token{
 		Success: err == nil,

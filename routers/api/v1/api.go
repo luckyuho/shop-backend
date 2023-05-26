@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	ctr "basic/app/controllers"
+	"basic/app/middlewares/auth"
 	ProductModel "basic/app/models/product"
 	UserModel "basic/app/models/user"
 
@@ -50,7 +51,7 @@ func ApiOauthCode2GetAccessToken(c *gin.Context) {
 	if status == http.StatusBadRequest {
 		template(c, status, accessToken)
 	} else {
-		token := ctr.GetCookie(c, accessToken.IdString)
+		token := ctr.GetCookie(c, accessToken.Id)
 		if !token.Success {
 			fmt.Println("錯誤")
 			template(c, http.StatusBadRequest, "取得cookie時錯誤")
@@ -69,27 +70,41 @@ func ApiGetAllProducts(c *gin.Context) {
 	template(c, http.StatusOK, products)
 }
 
-func ApiPurchaseSql(c *gin.Context) {
-	input := ProductModel.Product{}
-	c.Bind(&input)
-	fmt.Println(input)
-	err := ctr.PurchaseProduct(input.Id)
-	if err != nil {
-		template(c, http.StatusBadRequest, "購買商品時出錯")
-	} else {
-		template(c, http.StatusOK, nil)
-	}
-}
+// func ApiPurchaseSql(c *gin.Context) {
+// 	input := ProductModel.Product{}
+// 	c.Bind(&input)
+// 	fmt.Println(input)
+// 	err := ctr.PurchaseProduct(input.Id)
+// 	if err != nil {
+// 		template(c, http.StatusBadRequest, "購買商品時出錯")
+// 	} else {
+// 		template(c, http.StatusOK, nil)
+// 	}
+// }
 
 func ApiPurchaseVisa(c *gin.Context) {
-	input := ProductModel.Product{}
+	input := ProductModel.GetId{}
 	c.Bind(&input)
 	fmt.Println(input)
-	data := ctr.PurchaseVisa(input.Id)
-	// if err != nil {
-	// 	template(c, http.StatusBadRequest, "金流錯誤")
-	// } else {
-	fmt.Println(data)
-	template(c, http.StatusOK, data)
-	// }
+	userId := auth.GetUserId(c)
+	fmt.Println(userId)
+
+	// data := ctr.PurchaseVisa(userId, input.Id)
+	// template(c, http.StatusOK, userId)
+}
+
+type NewebPayReturn struct {
+	Status     string
+	MerchantID string
+	Version    string
+	TradeInfo  string
+	TradeSha   string
+}
+
+func ApiNotifyPurchase(c *gin.Context) {
+	input := NewebPayReturn{}
+	c.Bind(&input)
+	status, msg := ctr.ApiPurchaseResult(input.TradeInfo)
+
+	template(c, status, msg)
 }
