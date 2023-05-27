@@ -2,7 +2,7 @@
 
 ## 設計採前後端分離
 
-[前端(vue)]() | [後端(golang)]()
+[前端(vue)](https://github.com/luckyuho/shop-frontend) | [後端(golang)](https://github.com/luckyuho/shop-backend)
 
 
 ## 整體流程
