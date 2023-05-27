@@ -45,7 +45,7 @@
 **金流系統：**
 
   * 串接[藍新金流(測試)](https://cwww.newebpay.com/)，本篇串接時，版本為 2.0
-  * 使用[官方提供的手冊-1.0.6.pdf]()
+  * 使用[官方提供的手冊-1.0.6.pdf](https://github.com/luckyuho/shop-backend/blob/main/Online%20Payment-Foreground%20Scenario%20API%20Specification_NDNF-1.0.6.pdf)
   * 將商品以及訂單資訊，按照藍新手冊中的加密方式打包給藍新金流
   * 藍新確認訂單無誤後，畫面會跳轉到藍新金流所提供的付款畫面
   * 確認使用者的付款資訊後，會通知前端與後端訂單是否成功付款
