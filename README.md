@@ -60,14 +60,18 @@
 
 ## 影片介紹
 
-登入採用第三方登入方式
+登入採用第三方登入方式 
 <center>
-  <img src="https://user-images.githubusercontent.com/18595678/133892284-a05c01b5-b465-409d-9369-87135d3334b1.gif" height="300"> 
+  <img src="https://github.com/luckyuho/shop-backend/blob/main/img/shop.gif" height="500"> 
 </center>
+
+
+ * ps. 最後成功支付完的跳轉畫面為google錯誤畫面，是因為藍新支付結束的跳轉與通知頁都必須是https的，但因為只有單台電腦，因此透過ngrok只能開啟一個https的網址，因為後端必須通知，才能更新訂單資訊，因此只好捨棄前端畫面，跳轉頁就只好亂設一通，如果前後端都部署到相對應的網域中，就不會有這個問題。
+
 
 藍新支付收據
 <center>
-  <img src="https://user-images.githubusercontent.com/18595678/133892284-a05c01b5-b465-409d-9369-87135d3334b1.gif" height="300"> 
+  <img src="https://github.com/luckyuho/shop-backend/blob/main/img/email.png" height="600"> 
 </center>
 
 
