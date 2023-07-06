@@ -3,6 +3,7 @@ package v1
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	ctr "basic/app/controllers"
 	"basic/app/middlewares/auth"
@@ -107,4 +108,11 @@ func ApiNotifyPurchase(c *gin.Context) {
 	status, msg := ctr.ApiPurchaseResult(input.TradeInfo)
 
 	template(c, status, msg)
+}
+
+func ApiPushOrder(c *gin.Context) {
+	for i := 0; i < 10; i++ {
+		ctr.PushOrder(strconv.Itoa(i))
+	}
+	fmt.Println("order done")
 }

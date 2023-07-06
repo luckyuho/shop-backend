@@ -1,17 +1,13 @@
 package main
 
 import (
-	"basic/app/models/logInfo"
 	routers "basic/routers/api"
-	"errors"
 	"os"
 
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-
-	logInfo.InsertLog("test", errors.New("this is a test"))
 	r := routers.InitRouter()
 	r.Run(":9432")
 }

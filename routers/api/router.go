@@ -1,8 +1,10 @@
 package routers
 
 import (
+	"errors"
 	"time"
 
+	"basic/app/models/logInfo"
 	v1 "basic/routers/api/v1"
 
 	"github.com/gin-contrib/cors"
@@ -34,6 +36,11 @@ func InitRouter() *gin.Engine {
 	// Gr1.POST("/purchase", v1.ApiPurchaseSql)
 	Gr1.POST("/visa", v1.ApiPurchaseVisa)
 	Gr1.POST("/notify", v1.ApiNotifyPurchase)
+	Gr1.POST("/order", v1.ApiPushOrder)
+
+	// 測試 mongodb 的使用情況
+	logInfo.InsertLog("test", errors.New("this is a test"))
+	// controllers.HandleOrder()  // 這裡有問題，要想一下要如何持續處理訂單，同時還要能起這個服務
 
 	return r
 }
